@@ -3,138 +3,891 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/all.min.css" />
-    <title>Hymn book</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>Hymn Book</title>
+    <style>
+      /* ==================== ROOT VARIABLES ==================== */
+      :root {
+        --primary: #2563eb;       /* Blue */
+        --secondary: #7c3aed;     /* Purple */
+        --light-bg: #eff6ff;      /* Light blue background */
+        --dark-bg: #0f172a;       /* Dark blue background */
+        --card-light: #ffffff;    /* White cards */
+        --card-dark: #1e293b;     /* Dark cards */
+        --text-light: #1e293b;    /* Dark text on light */
+        --text-dark: #f1f5f9;     /* Light text on dark */
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+
+      /* ==================== GLOBAL STYLES ==================== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: var(--light-bg);
+        color: var(--text-light);
+        transition: all 0.3s ease;
+        min-height: 100vh;
+      }
+
+      body.dark-mode {
+        background-color: var(--dark-bg);
+        color: var(--text-dark);
+      }
+
+      /* ==================== HEADER ==================== */
+      .top {
+        height: 70px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 10px var(--shadow);
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 3px solid white;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--primary);
+        font-size: 20px;
+      }
+
+      .app-title {
+        color: white;
+        font-size: 22px;
+        font-weight: 600;
+      }
+
+      .search-container {
+        flex: 1;
+        max-width: 400px;
+        margin: 0 20px;
+        position: relative;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 12px 20px 12px 45px;
+        border-radius: 25px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s;
+      }
+
+      .search-input:focus {
+        background: white;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+      }
+
+      /* ==================== SIDEBAR ==================== */
+      .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100%;
+        background: white;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 2px 0 10px var(--shadow);
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.dark-mode .sidebar {
+        background: var(--card-dark);
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-header {
+        padding: 25px 20px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .sidebar-title {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 5px;
+      }
+
+      .sidebar-content {
+        flex: 1;
+        padding: 20px 0;
+        overflow-y: auto;
+      }
+
+      .sidebar-item {
+        padding: 15px 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-left: 4px solid transparent;
+        color: var(--text-light);
+        text-decoration: none;
+      }
+
+      body.dark-mode .sidebar-item {
+        color: var(--text-dark);
+      }
+
+      .sidebar-item:hover {
+        background: rgba(37, 99, 235, 0.1);
+        border-left: 4px solid var(--primary);
+      }
+
+      .sidebar-item.active {
+        background: rgba(37, 99, 235, 0.15);
+        border-left: 4px solid var(--primary);
+        color: var(--primary);
+        font-weight: 500;
+      }
+
+      body.dark-mode .sidebar-item.active {
+        color: #60a5fa;
+      }
+
+      .sidebar-icon {
+        width: 24px;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      .sidebar-text {
+        font-size: 16px;
+      }
+
+      /* ==================== MAIN CONTENT ==================== */
+      .main-content {
+        padding: 20px;
+        padding-bottom: 80px;
+      }
+
+      .hymn-count {
+        margin-bottom: 20px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      body.dark-mode .hymn-count {
+        color: #cbd5e1;
+      }
+
+      .hymn-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+      }
+
+      .hymn-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 2px 5px var(--shadow);
+        border: 1px solid #e2e8f0;
+      }
+
+      body.dark-mode .hymn-card {
+        background: var(--card-dark);
+        border-color: #334155;
+      }
+
+      .hymn-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px var(--shadow);
+      }
+
+      .hymn-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+      }
+
+      .hymn-number {
+        background: var(--primary);
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .hymn-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--text-light);
+      }
+
+      body.dark-mode .hymn-title {
+        color: var(--text-dark);
+      }
+
+      .hymn-category {
+        font-size: 14px;
+        color: #666;
+        background: #f1f5f9;
+        padding: 4px 12px;
+        border-radius: 12px;
+        display: inline-block;
+      }
+
+      body.dark-mode .hymn-category {
+        color: #cbd5e1;
+        background: #334155;
+      }
+
+      .hymn-preview {
+        margin-top: 10px;
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      body.dark-mode .hymn-preview {
+        color: #94a3b8;
+      }
+
+      /* ==================== HYMN DETAIL VIEW ==================== */
+      .hymn-detail {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .back-btn {
+        background: none;
+        border: none;
+        color: var(--primary);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 10px 0;
+      }
+
+      .hymn-detail-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      .favorite-detail-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .detail-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .detail-meta {
+        opacity: 0.9;
+        font-size: 14px;
+      }
+
+      .lyrics-container {
+        padding: 10px;
+      }
+
+      .verse {
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      body.dark-mode .verse {
+        border-bottom-color: #334155;
+      }
+
+      .verse:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .verse-text {
+        font-size: 18px;
+        line-height: 1.7;
+        white-space: pre-line;
+        margin-bottom: 10px;
+      }
+
+      .verse-number {
+        text-align: right;
+        color: #94a3b8;
+        font-size: 14px;
+        font-style: italic;
+      }
+
+      /* ==================== EMPTY STATE ==================== */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+      }
+
+      .empty-icon {
+        font-size: 48px;
+        color: #cbd5e1;
+        margin-bottom: 20px;
+      }
+
+      .empty-text {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      /* ==================== LOADING ==================== */
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #64748b;
+      }
+
+      /* ==================== RESPONSIVE ==================== */
+      @media (max-width: 768px) {
+        .top {
+          padding: 0 15px;
+        }
+        
+        .app-title {
+          display: none;
+        }
+        
+        .search-container {
+          margin: 0 10px;
+        }
+        
+        .hymn-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .sidebar {
+          width: 100%;
+          max-width: 320px;
+        }
+      }
+
+      /* ==================== UTILITY ==================== */
+      .menu-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 5px;
+      }
+
+      .favorite-btn {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 5px;
+        color: #d1d5db;
+      }
+
+      .favorite-btn.active {
+        color: #ef4444;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
-  <style>
-    .light {
-      --bg-clr: rgb(229, 238, 255);
-      --tp-clr: blue;
-      --img-bdr: black;
-      --sd-bg: white;
-      --sd-clr: black;
-      --i-h-clr:black;
+  <body>
+    <!-- HEADER -->
+    <header class="top">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
       
-    }
-    .dark {
-      --bg-clr: rgb(37, 40, 46);
-      --img-bdr: rgb(255, 255, 255);
-      --sd-bg: rgb(0, 0, 0);
-      --sd-clr: white;
-      --i-h-clr:white;
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      height: 100vh;
-      background-color: var(--bg-clr);
-    }
-    body .top {
-      height: 70px;
-      background: var(--tp-clr);
-      display: flex;
-      align-items: center;
-      position: relative;
-    }
-    body .top img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 5px solid var(--img-bdr);
-      position: absolute;
-      left: 20px;
-    }
-    body .top input {
-      width: 300px;
-      border-radius: 10px;
-      padding: 10px;
-      outline: none;
-      position: absolute;
-      right: 50px;
-      border: 0px solid;
-    }
-    body .top input:focus {
-      outline: none;
-    }
-    body .top input:hover {
-      outline: none;
-    }
-    .fa-bars {
-      position: absolute;
-      left: 0;
-      padding-left: 5px;
-      padding-top: 5px;
-      font-size: 25px;
-    }
-    .fa-bars:hover {
-      transform: scale(1.2);
-    }
-    .fa-times:hover {
-      transform: scale(1.2);
-    }
-    #open {
-      display: none;
-    }
-    #open:checked ~ .sidebar {
-      opacity: 0;
-      width: 0%;
-    }
-    .sidebar {
-      background: var(--sd-bg);
-      width: 20%;
-      height: 40%;
-      opacity: 1;
-      padding: 0px 0px 0px 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      border-bottom-right-radius: 15px;
-      position: relative;
-      transition: all 0.4s ease;
-    }
-    .sidetop {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 5px 5px 5px;
-      font-size: large;
-      font-weight: 900;
-    }
-    .sidebar nav {
-      display: flex;
-      align-items: center;
-    }
-    .sidebar nav:hover{
-      padding:5px;
-      border-top: 0.1px solid var(--i-h-clr);
-      border-bottom: 0.1px solid var(--i-h-clr);
-    }
-  </style>
-  <body class="light">
-    <div class="top">
-      <img src="logo.png" alt="Logo image" />
-      <input type="text" placeholder="Search...." />
-    </div>
-    <input type="checkbox" id="open" />
-    <label for="open">
-      <i class="fas fa-bars"></i>
-    </label>
-    <div class="sidebar">
-      <div class="sidetop">
-        <p>MENU</p>
-        <label for="open">
-          <i class="fas fa-times"></i>
-        </label>
+      <div class="logo-container">
+        <div class="logo">
+          <img src="logo.png" alt="Logo image" style="border-radius: 100%; height: 50px; width: 50px;" />
+        </div>
+        <h1 class="app-title">Hymn Book</h1>
       </div>
-      <nav><i class="fas fa-heart"></i>&nbsp;&nbsp;Favorites</nav>
-      <nav><i class="fas fa-sun"></i>&nbsp;&nbsp;Theme</nav>
-      <nav><i class="fas fa-font"></i>&nbsp;&nbsp;Fonts</nav>
-      <nav><i class="fas fa-moon"></i>&nbsp;&nbsp;Mode</nav>
-      <nav><i class="fas fa-question"></i>&nbsp;&nbsp;About</nav>
-    </div>
+      
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-input" placeholder="Search hymns..." 
+               oninput="searchHymns(this.value)">
+      </div>
+    </header>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Menu</div>
+        <button class="close-btn" onclick="toggleSidebar()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="sidebar-content">
+        <a href="#" class="sidebar-item active" onclick="showAllHymns(); toggleSidebar()">
+          <div class="sidebar-icon"><i class="fas fa-book"></i></div>
+          <div class="sidebar-text">All Hymns</div>
+        </a>
+        
+        <a href="#" class="sidebar-item" onclick="showFavorites(); toggleSidebar()">
+          <div class="sidebar-icon"><i class="fas fa-heart"></i></div>
+          <div class="sidebar-text">Favorites</div>
+        </a>
+        
+        <a href="#" class="sidebar-item" onclick="showCategories(); toggleSidebar()">
+          <div class="sidebar-icon"><i class="fas fa-folder"></i></div>
+          <div class="sidebar-text">Categories</div>
+        </a>
+        
+        <a href="#" class="sidebar-item" onclick="toggleTheme(); toggleSidebar()">
+          <div class="sidebar-icon"><i class="fas fa-moon"></i></div>
+          <div class="sidebar-text">Dark Mode</div>
+        </a>
+        
+        <a href="#" class="sidebar-item" onclick="toggleSidebar()">
+          <div class="sidebar-icon"><i class="fas fa-font"></i></div>
+          <div class="sidebar-text">Font Size</div>
+        </a>
+        
+        <a href="#" class="sidebar-item" onclick="toggleSidebar()">
+          <div class="sidebar-icon"><i class="fas fa-info-circle"></i></div>
+          <div class="sidebar-text">About</div>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <div class="hymn-count" id="hymnCount">Loading hymns...</div>
+      
+      <!-- HYMN LIST VIEW -->
+      <div id="hymnList" class="hymn-grid">
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin fa-2x"></i>
+          <p>Loading hymns...</p>
+        </div>
+      </div>
+      
+      <!-- HYMN DETAIL VIEW -->
+      <div id="hymnDetail" class="hymn-detail"></div>
+      
+      <!-- EMPTY STATE -->
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-icon">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <div class="empty-text">No hymns found</div>
+        <p>Try a different search or check back later</p>
+      </div>
+    </main>
+
+    <script>
+      // ==================== HYMN DATA ====================
+      const hymns = [
+        {
+          id: 1,
+          number: 1,
+          title: "Amazing Grace",
+          category: "Salvation",
+          lyrics: "Amazing grace how sweet the sound, That saved a wretch like me! I once was lost but now am found, Was blind but now I see.",
+          verses: [
+            "Amazing grace how sweet the sound, That saved a wretch like me! I once was lost but now am found, Was blind but now I see.",
+            "T'was grace that taught my heart to fear, And grace my fears relieved; How precious did that grace appear, The hour I first believed.",
+            "Through many dangers, toils and snares, I have already come; 'Tis grace hath brought me safe thus far, And grace will lead me home."
+          ],
+          author: "John Newton",
+          year: 1779
+        },
+        {
+          id: 2,
+          number: 2,
+          title: "How Great Thou Art",
+          category: "Praise",
+          lyrics: "O Lord my God, When I in awesome wonder, Consider all the worlds Thy Hands have made; I see the stars, I hear the rolling thunder, Thy power throughout the universe displayed.",
+          verses: [
+            "O Lord my God, When I in awesome wonder, Consider all the worlds Thy Hands have made; I see the stars, I hear the rolling thunder, Thy power throughout the universe displayed.",
+            "When through the woods, and forest glades I wander, And hear the birds sing sweetly in the trees. When I look down, from lofty mountain grandeur And see the brook, and feel the gentle breeze.",
+            "And when I think, that God, His Son not sparing; Sent Him to die, I scarce can take it in; That on the Cross, my burden gladly bearing, He bled and died to take away my sin."
+          ],
+          author: "Carl Boberg",
+          year: 1885
+        },
+        {
+          id: 3,
+          number: 3,
+          title: "Great Is Thy Faithfulness",
+          category: "Faithfulness",
+          lyrics: "Great is Thy faithfulness, O God my Father; There is no shadow of turning with Thee; Thou changest not, Thy compassions, they fail not; As Thou hast been Thou forever wilt be.",
+          verses: [
+            "Great is Thy faithfulness, O God my Father; There is no shadow of turning with Thee; Thou changest not, Thy compassions, they fail not; As Thou hast been Thou forever wilt be.",
+            "Summer and winter, and springtime and harvest, Sun, moon and stars in their courses above, Join with all nature in manifold witness To Thy great faithfulness, mercy and love.",
+            "Pardon for sin and a peace that endureth, Thine own dear presence to cheer and to guide; Strength for today and bright hope for tomorrow, Blessings all mine, with ten thousand beside!"
+          ],
+          author: "Thomas Chisholm",
+          year: 1923
+        },
+        {
+          id: 4,
+          number: 4,
+          title: "Be Thou My Vision",
+          category: "Prayer",
+          lyrics: "Be Thou my Vision, O Lord of my heart; Naught be all else to me, save that Thou art. Thou my best Thought, by day or by night, Waking or sleeping, Thy presence my light.",
+          verses: [
+            "Be Thou my Vision, O Lord of my heart; Naught be all else to me, save that Thou art. Thou my best Thought, by day or by night, Waking or sleeping, Thy presence my light.",
+            "Be Thou my Wisdom, and Thou my true Word; I ever with Thee and Thou with me, Lord; Thou my great Father, I Thy true son; Thou in me dwelling, and I with Thee one.",
+            "Riches I heed not, nor man's empty praise, Thou mine Inheritance, now and always: Thou and Thou only, first in my heart, High King of Heaven, my Treasure Thou art."
+          ],
+          author: "Ancient Irish",
+          year: 1905
+        },
+        {
+          id: 5,
+          number: 5,
+          title: "It Is Well With My Soul",
+          category: "Comfort",
+          lyrics: "When peace like a river, attendeth my way, When sorrows like sea billows roll; Whatever my lot, Thou hast taught me to say, It is well, it is well with my soul.",
+          verses: [
+            "When peace like a river, attendeth my way, When sorrows like sea billows roll; Whatever my lot, Thou hast taught me to say, It is well, it is well with my soul.",
+            "Though Satan should buffet, though trials should come, Let this blest assurance control, That Christ hath regarded my helpless estate, And hath shed His own blood for my soul.",
+            "My sin—oh, the bliss of this glorious thought!— My sin, not in part but the whole, Is nailed to the cross, and I bear it no more, Praise the Lord, praise the Lord, O my soul!"
+          ],
+          author: "Horatio Spafford",
+          year: 1873
+        }
+      ];
+
+      // ==================== APP STATE ====================
+      let favorites = JSON.parse(localStorage.getItem('hymnFavorites')) || [];
+      let currentView = 'all';
+      let currentCategory = null;
+
+      // ==================== DOM ELEMENTS ====================
+      const hymnListEl = document.getElementById('hymnList');
+      const hymnDetailEl = document.getElementById('hymnDetail');
+      const hymnCountEl = document.getElementById('hymnCount');
+      const emptyStateEl = document.getElementById('emptyState');
+
+      // ==================== INITIALIZE APP ====================
+      function initApp() {
+        renderHymnList(hymns);
+        updateSidebarActive();
+      }
+
+      // ==================== SIDEBAR FUNCTIONS ====================
+      function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('active');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+      }
+
+      function updateSidebarActive() {
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        
+        if (currentView === 'all') {
+          document.querySelector('.sidebar-item:nth-child(1)').classList.add('active');
+        } else if (currentView === 'favorites') {
+          document.querySelector('.sidebar-item:nth-child(2)').classList.add('active');
+        } else if (currentView === 'categories') {
+          document.querySelector('.sidebar-item:nth-child(3)').classList.add('active');
+        }
+      }
+
+      // ==================== THEME FUNCTIONS ====================
+      function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      }
+
+      // Load saved theme
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.querySelector('.sidebar-item:nth-child(4) .sidebar-text').textContent = 'Light Mode';
+      }
+
+      // ==================== RENDER FUNCTIONS ====================
+      function renderHymnList(hymnsToShow) {
+        hymnListEl.classList.remove('hidden');
+        hymnDetailEl.classList.add('hidden');
+        emptyStateEl.classList.add('hidden');
+        
+        if (hymnsToShow.length === 0) {
+          hymnListEl.innerHTML = '';
+          emptyStateEl.classList.remove('hidden');
+          hymnCountEl.textContent = 'No hymns found';
+          return;
+        }
+        
+        hymnCountEl.textContent = `${hymnsToShow.length} hymns`;
+        
+        const hymnsHTML = hymnsToShow.map(hymn => {
+          const isFavorite = favorites.includes(hymn.id);
+          return `
+            <div class="hymn-card" onclick="showHymnDetail(${hymn.id})">
+              <div class="hymn-header">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <div class="hymn-number">${hymn.number}</div>
+                    <h3 class="hymn-title">${hymn.title}</h3>
+                  </div>
+                  <span class="hymn-category">${hymn.category}</span>
+                </div>
+                <button class="favorite-btn ${isFavorite ? 'active' : ''}" 
+                        onclick="toggleFavorite(event, ${hymn.id})">
+                  <i class="fas fa-heart"></i>
+                </button>
+              </div>
+              <div class="hymn-preview">
+                ${hymn.lyrics}
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        hymnListEl.innerHTML = hymnsHTML;
+      }
+
+      function showHymnDetail(hymnId) {
+        const hymn = hymns.find(h => h.id === hymnId);
+        if (!hymn) return;
+        
+        const isFavorite = favorites.includes(hymn.id);
+        
+        hymnDetailEl.innerHTML = `
+          <button class="back-btn" onclick="showAllHymns()">
+            <i class="fas fa-arrow-left"></i> Back to List
+          </button>
+          
+          <div class="hymn-detail-header">
+            <button class="favorite-detail-btn" onclick="toggleFavorite(null, ${hymn.id})">
+              <i class="fas fa-heart ${isFavorite ? 'active' : ''}"></i>
+            </button>
+            
+            <h2 class="detail-title">${hymn.number}. ${hymn.title}</h2>
+            <div class="detail-meta">
+              ${hymn.category} • ${hymn.author} • ${hymn.year}
+            </div>
+          </div>
+          
+          <div class="lyrics-container">
+            ${hymn.verses.map((verse, index) => `
+              <div class="verse">
+                <div class="verse-text">${verse}</div>
+                <div class="verse-number">Verse ${index + 1}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        
+        hymnListEl.classList.add('hidden');
+        hymnDetailEl.classList.remove('hidden');
+        emptyStateEl.classList.add('hidden');
+      }
+
+      // ==================== VIEW FUNCTIONS ====================
+      function showAllHymns() {
+        currentView = 'all';
+        currentCategory = null;
+        renderHymnList(hymns);
+        updateSidebarActive();
+      }
+
+      function showFavorites() {
+        currentView = 'favorites';
+        const favoriteHymns = hymns.filter(hymn => favorites.includes(hymn.id));
+        renderHymnList(favoriteHymns);
+        updateSidebarActive();
+      }
+
+      function showCategories() {
+        currentView = 'categories';
+        const categories = [...new Set(hymns.map(h => h.category))];
+        
+        hymnListEl.innerHTML = categories.map(category => {
+          const count = hymns.filter(h => h.category === category).length;
+          return `
+            <div class="hymn-card" onclick="showCategory('${category}')">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h3 class="hymn-title">${category}</h3>
+                  <p style="color: #666; margin-top: 5px;">${count} hymns</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--primary);"></i>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        hymnCountEl.textContent = `${categories.length} categories`;
+        updateSidebarActive();
+      }
+
+      function showCategory(category) {
+        currentCategory = category;
+        const categoryHymns = hymns.filter(hymn => hymn.category === category);
+        renderHymnList(categoryHymns);
+        hymnCountEl.textContent = `${categoryHymns.length} hymns in ${category}`;
+      }
+
+      // ==================== SEARCH FUNCTION ====================
+      function searchHymns(query) {
+        if (!query.trim()) {
+          if (currentView === 'all') showAllHymns();
+          else if (currentView === 'favorites') showFavorites();
+          else if (currentView === 'categories') showCategories();
+          return;
+        }
+        
+        const searchTerm = query.toLowerCase();
+        const filteredHymns = hymns.filter(hymn => 
+          hymn.title.toLowerCase().includes(searchTerm) ||
+          hymn.lyrics.toLowerCase().includes(searchTerm) ||
+          hymn.category.toLowerCase().includes(searchTerm) ||
+          hymn.author.toLowerCase().includes(searchTerm) ||
+          hymn.number.toString().includes(searchTerm)
+        );
+        
+        renderHymnList(filteredHymns);
+        hymnCountEl.textContent = `Found ${filteredHymns.length} hymns for "${query}"`;
+      }
+
+      // ==================== FAVORITES FUNCTION ====================
+      function toggleFavorite(event, hymnId) {
+        if (event) event.stopPropagation();
+        
+        const index = favorites.indexOf(hymnId);
+        if (index > -1) {
+          favorites.splice(index, 1);
+        } else {
+          favorites.push(hymnId);
+        }
+        
+        localStorage.setItem('hymnFavorites', JSON.stringify(favorites));
+        
+        // Refresh current view
+        if (currentView === 'favorites') {
+          showFavorites();
+        } else if (hymnDetailEl.style.display !== 'none') {
+          showHymnDetail(hymnId);
+        } else {
+          if (currentCategory) {
+            showCategory(currentCategory);
+          } else {
+            renderHymnList(currentView === 'all' ? hymns : 
+                          hymns.filter(h => favorites.includes(h.id)));
+          }
+        }
+      }
+
+      // ==================== INITIALIZE ON LOAD ====================
+      document.addEventListener('DOMContentLoaded', initApp);
+    </script>
   </body>
-  <script></script>
 </html>
