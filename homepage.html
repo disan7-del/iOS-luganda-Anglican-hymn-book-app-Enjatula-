@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/all.min.css" />
+    <title>Hymn book</title>
+  </head>
+  <style>
+    .light {
+      --bg-clr: rgb(229, 238, 255);
+      --tp-clr: blue;
+      --img-bdr: black;
+      --sd-bg: white;
+      --sd-clr: black;
+      --i-h-clr:black;
+      
+    }
+    .dark {
+      --bg-clr: rgb(37, 40, 46);
+      --img-bdr: rgb(255, 255, 255);
+      --sd-bg: rgb(0, 0, 0);
+      --sd-clr: white;
+      --i-h-clr:white;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      height: 100vh;
+      background-color: var(--bg-clr);
+    }
+    body .top {
+      height: 70px;
+      background: var(--tp-clr);
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    body .top img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 5px solid var(--img-bdr);
+      position: absolute;
+      left: 20px;
+    }
+    body .top input {
+      width: 300px;
+      border-radius: 10px;
+      padding: 10px;
+      outline: none;
+      position: absolute;
+      right: 50px;
+      border: 0px solid;
+    }
+    body .top input:focus {
+      outline: none;
+    }
+    body .top input:hover {
+      outline: none;
+    }
+    .fa-bars {
+      position: absolute;
+      left: 0;
+      padding-left: 5px;
+      padding-top: 5px;
+      font-size: 25px;
+    }
+    .fa-bars:hover {
+      transform: scale(1.2);
+    }
+    .fa-times:hover {
+      transform: scale(1.2);
+    }
+    #open {
+      display: none;
+    }
+    #open:checked ~ .sidebar {
+      opacity: 0;
+      width: 0%;
+    }
+    .sidebar {
+      background: var(--sd-bg);
+      width: 20%;
+      height: 40%;
+      opacity: 1;
+      padding: 0px 0px 0px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      border-bottom-right-radius: 15px;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+    .sidetop {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 5px 5px;
+      font-size: large;
+      font-weight: 900;
+    }
+    .sidebar nav {
+      display: flex;
+      align-items: center;
+    }
+    .sidebar nav:hover{
+      padding:5px;
+      border-top: 0.1px solid var(--i-h-clr);
+      border-bottom: 0.1px solid var(--i-h-clr);
+    }
+  </style>
+  <body class="light">
+    <div class="top">
+      <img src="logo.png" alt="Logo image" />
+      <input type="text" placeholder="Search...." />
+    </div>
+    <input type="checkbox" id="open" />
+    <label for="open">
+      <i class="fas fa-bars"></i>
+    </label>
+    <div class="sidebar">
+      <div class="sidetop">
+        <p>MENU</p>
+        <label for="open">
+          <i class="fas fa-times"></i>
+        </label>
+      </div>
+      <nav><i class="fas fa-heart"></i>&nbsp;&nbsp;Favorites</nav>
+      <nav><i class="fas fa-sun"></i>&nbsp;&nbsp;Theme</nav>
+      <nav><i class="fas fa-font"></i>&nbsp;&nbsp;Fonts</nav>
+      <nav><i class="fas fa-moon"></i>&nbsp;&nbsp;Mode</nav>
+      <nav><i class="fas fa-question"></i>&nbsp;&nbsp;About</nav>
+    </div>
+  </body>
+  <script></script>
+</html>
